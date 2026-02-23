@@ -1,0 +1,243 @@
+body {
+  margin: 0;
+  background: #f4f6f8;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.app {
+  width: 50%;
+  min-width: 480px;
+  margin: 60px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+  transition: 0.3s;
+}
+
+.app.dark {
+  background: #1e293b;
+  color: white;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.mini-stats {
+  font-size: 14px;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+.theme-toggle {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.input-section {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.input-section input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+.input-section button {
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: none;
+  background: #3b82f6;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.filter-buttons button {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  background: #f9fafb;
+  cursor: pointer;
+}
+
+.filter-buttons .active {
+  background: #3b82f6;
+  color: white;
+  border: none;
+}
+
+.clear-link {
+  margin-left: auto;
+  font-size: 14px;
+  cursor: pointer;
+  color: #999;
+}
+
+.clear-link:hover {
+  color: #ef4444;
+}
+
+.stats {
+  font-size: 14px;
+  margin-bottom: 15px;
+  color: #666;
+}
+
+.search {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+/* Status message styles */
+.status {
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.status.success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Task card styles */
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.task-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: #f8fafc;
+  transition: 0.25s ease;
+}
+
+.task-card:hover {
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Priority color bar */
+.priority-bar {
+  width: 6px;
+  height: 32px;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+/* Check box */
+.check-box {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.check-box.checked {
+  background: #3b82f6;
+  color: white;
+}
+
+.task-text {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.completed {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+.edit-input {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+/* Floating delete button styles */
+.delete-floating {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: #f1f5f9;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.3s ease;
+  opacity: 1; /* Always visible */
+}
+
+/* Button hover effects */
+.delete-floating:hover {
+  background: #fee2e2;
+  color: #ef4444;
+  scale: 1.2; /* Slightly increase size */
+}
+
+/* Task completed input styles */
+.task-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #f8fafc;
+  margin-bottom: 10px;
+}
+
+.priority-bar {
+  width: 6px;
+  height: 32px;
+  border-radius: 4px;
+  margin-right: 10px;
+}
