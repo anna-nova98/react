@@ -270,7 +270,7 @@ textarea {
 
 .task-content {
   flex: 1;
-  min-width: 0;   /* 🔴 이게 매우 중요 */
+  min-width: 0;  
 }
 
 .task-description {
@@ -382,12 +382,12 @@ textarea {
   gap: 14px;
 }
 
-/* 중요: width 100%는 modal 내부 기준 */
+
 .modal input,
 .modal textarea,
 .modal select {
   width: 100%;
-  box-sizing: border-box;  /* 🔥 이게 중요 */
+  box-sizing: border-box;  
 
   padding: 10px 12px;
   border-radius: 10px;
@@ -446,6 +446,25 @@ textarea {
   background: #e5e7eb;
 }
 
+
+.modal.small {
+  max-width: 360px;
+  text-align: center;
+}
+
+.modal.small p {
+  margin: 20px 0;
+  color: #555;
+}
+
+.modal-actions .danger {
+  background: #ef4444;
+  color: white;
+}
+
+.modal-actions .danger:hover {
+  background: #dc2626;
+}
 /* ===== Animation ===== */
 @keyframes modalFade {
   from {
@@ -487,13 +506,13 @@ textarea {
   margin-bottom: 15px;
 }
 
-/* 기존 필터 버튼 그룹 */
+
 .filter-buttons {
   display: flex;
   gap: 10px;
 }
 
-/* clear 버튼 */
+/* clear  */
 .clear-button {
   background: transparent;
   color: #ef4444;
@@ -505,14 +524,138 @@ textarea {
   transition: all 0.25s ease;
 }
 
-/* hover 효과 */
+/* hover*/
 .clear-button:hover {
   background: #ef4444;
   color: white;
   transform: translateY(-1px);
 }
 
-/* 클릭 시 눌림 효과 */
+
 .clear-button:active {
   transform: translateY(1px);
+}
+.sort-select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  margin-left: 10px;
+}
+
+/* header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* theme button */
+.theme-toggle {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* ================= DARK MODE ================= */
+
+body.dark {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #e2e8f0;
+}
+
+/* 메인 카드 컨테이너 */
+body.dark .app {
+  background: rgb(48 81 135 / 85%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.05);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+/* 검색창 */
+body.dark .search {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+}
+
+body.dark .search::placeholder {
+  color: #94a3b8;
+}
+
+/* 필터 버튼 */
+body.dark .filter-buttons button {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #cbd5e1;
+}
+
+body.dark .filter-buttons button.active {
+  background: #3b82f6;
+  border: none;
+  color: white;
+}
+
+/* sort select */
+body.dark .sort-select {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+}
+
+/* clear 버튼 */
+body.dark .clear-button {
+  background: transparent;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+}
+
+body.dark .clear-button:hover {
+  background: #ef4444;
+  color: white;
+}
+
+/* task card */
+body.dark .task-card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+body.dark .task-description {
+  color: #94a3b8;
+}
+
+body.dark .task-date {
+  color: #64748b;
+}
+
+/* action buttons */
+body.dark .action-buttons button {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+}
+
+body.dark .action-buttons button:hover {
+  background: #3b82f6;
+  color: white;
+}
+
+/* modal */
+body.dark .modal h3{
+  color: #e2e8f0;
+}
+body.dark .modal {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+}
+body.dark input,
+body.dark textarea,
+body.dark select {
+  background: #0f172a;
+  border: 1px solid #334155;
+  color: #e2e8f0;
 }

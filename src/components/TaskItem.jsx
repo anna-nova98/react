@@ -14,7 +14,7 @@ export default function TaskItem({
   const [value, setValue] = useState(task.title);
 
   const handleEdit = () => {
-    updateTask(task.id, { title: value });
+    updateTask(task.id, { title: value }); 
     setEditing(false);
   };
 
@@ -25,6 +25,8 @@ export default function TaskItem({
   };
 
   const formattedDate = new Date(task.createdAt).toLocaleString();
+
+ 
 
   return (
     <motion.div

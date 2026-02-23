@@ -1,10 +1,14 @@
+import { motion } from "framer-motion";
+
 export default function ThemeToggle({ darkMode, setDarkMode }) {
   return (
-    <button
+    <motion.button
       className="theme-toggle"
-      onClick={() => setDarkMode(!darkMode)}
+      onClick={() => setDarkMode(prev => !prev)}
+      whileTap={{ scale: 0.9 }}
+      whileHover={{ scale: 1.1 }}
     >
-      {darkMode ? "☀ Light" : "🌙 Dark"}
-    </button>
+      {darkMode ? "🌙" : "☀️"}
+    </motion.button>
   );
 }

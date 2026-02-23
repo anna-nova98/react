@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import TaskList from "./components/TaskList";
-
+import ThemeToggle from "./components/ThemeToggle";
 export default function App() {
+  const [darkMode, setDarkMode] = useState(false);
   const [tasks, setTasks] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [editTask, setEditTask] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("medium");
@@ -12,12 +15,19 @@ export default function App() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState(null);
   const [viewTask, setViewTask] = useState(null);
-  const [editTask, setEditTask] = useState(null);
+  const [deleteTaskId, setDeleteTaskId] = useState(null);
+  const [sortBy, setSortBy] = useState("newest");
   useEffect(() => {
     const saved = localStorage.getItem("tasks");
     if (saved) setTasks(JSON.parse(saved));
   }, []);
-
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
+  }, [darkMode]);
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
@@ -29,6 +39,19 @@ export default function App() {
 
   const addTask = () => {
   if (!title.trim()) return;
+
+  const today = new Date().toISOString().split("T")[0];  //today
+
+  // validation
+  if (!dueDate) {
+    alert("Please select a due date");
+    return;
+  }
+
+  if (dueDate < today) {
+    alert("Due date cannot be in the future");
+    return;
+  }
 
   if (editTask) {
     // EDIT MODE
@@ -53,19 +76,19 @@ export default function App() {
       description,
       completed: false,
       priority,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
       dueDate
     };
 
     setTasks(prev => [newTask, ...prev]);
   }
 
-  // 초기화
   setTitle("");
   setDescription("");
   setDueDate("");
   setPriority("medium");
   setEditTask(null);
+  setShowModal(false);
 };
 
   const toggleTask = (id) => {
@@ -81,41 +104,82 @@ export default function App() {
     showStatus("success", "Task deleted");
   };
 
-  const updateTask = (id, newTitle) => {
-    setTasks(prev =>
+  const updateTask = (id, newTaskData) => {
+    setTasks(prev => 
       prev.map(t =>
-        t.id === id ? { ...t, title: newTitle } : t
+        t.id === id ? { ...t, ...newTaskData } : t
       )
     );
   };
 
   const filteredTasks = tasks
-    .filter(t => {
-      if (filter === "active") return !t.completed;
-      if (filter === "completed") return t.completed;
-      return true;
-    })
-    .filter(t =>
-      t.title.toLowerCase().includes(search.toLowerCase())
+  .filter(t => {
+    if (filter === "active") return !t.completed;
+    if (filter === "completed") return t.completed;
+    return true;
+  })
+  .filter(t => {
+    const keyword = search.toLowerCase();
+
+    return (
+      t.title.toLowerCase().includes(keyword) ||
+      (t.description &&
+        t.description.toLowerCase().includes(keyword))
     );
-  const [showModal, setShowModal] = useState(false);
+  });
+
+  const sortedTasks = [...filteredTasks].sort((a, b) => {
+    if (sortBy === "newest") {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    }
+
+    if (sortBy === "oldest") {
+      return new Date(a.createdAt) - new Date(b.createdAt);
+    }
+
+    if (sortBy === "due") {
+      if (!a.dueDate) return 1;
+      if (!b.dueDate) return -1;
+      return new Date(a.dueDate) - new Date(b.dueDate);
+    }
+
+    if (sortBy === "priority") {
+      const priorityOrder = { high: 3, medium: 2, low: 1 };
+      return priorityOrder[b.priority] - priorityOrder[a.priority];
+    }
+
+    return 0;
+  });
+
+
+
   const clearCompleted = () => {
       setTasks(prev => prev.filter(task => !task.completed));
     };
 
-    useEffect(() => {
-    if (editTask) {
-      setTitle(editTask.title);
-      setDescription(editTask.description || "");
-      setDueDate(editTask.dueDate || "");
-      setPriority(editTask.priority);
-      setShowModal(true);
-    }
-  }, [editTask]);
+  useEffect(() => {
+  if (editTask) {
+    setTitle(editTask.title);
+    setDescription(editTask.description || "");
+    setDueDate(editTask.dueDate || "");
+    setPriority(editTask.priority);
+    setShowModal(true);
+  }
+}, [editTask]);
+  const confirmDelete = () => {
+    setTasks(prev => prev.filter(t => t.id !== deleteTaskId));
+    setDeleteTaskId(null);
+  };
+
+  
+
+  const taskToDelete = tasks.find(t => t.id === deleteTaskId);
   return (
     <div className="app">
-      <h1>Task Manager</h1>
-
+      <div style={{display: "flex",justifyContent:"space-between"}}>
+        <h1>Task Manager</h1>
+        <ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
+      </div>
       <AnimatePresence>
         {status && (
           <motion.div
@@ -147,7 +211,7 @@ export default function App() {
         onChange={(e) => setSearch(e.target.value)}
       />
       <div className="filter-row">
-        <div className="filter-buttons">
+        {/* <div className="filter-buttons">
         {["all", "active", "completed"].map(type => (
           <button
             key={type}
@@ -157,18 +221,41 @@ export default function App() {
             {type}
           </button>
         ))}
-        </div>
-         <button
+        </div> */}
+          <div>
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className="sort-select"
+            >
+                <option value="all">all</option>
+                <option value="active">active</option>
+                <option value="completed">completed</option>
+            </select>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="sort-select"
+            >
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+                <option value="due">Due Date</option>
+                <option value="priority">Priority</option>
+            </select>
+          </div>
+          <button
             className="clear-button"
             onClick={clearCompleted}
           >
             clear
           </button>
       </div>
+      
+
       {showModal && (
         <div className="modal-overlay">
           <div className="modal">
-            <h3>Add Task</h3>
+            <h3>{editTask ? "Edit Task" : "Add Task"}</h3>
 
              <div className="input-section column">
                 <input
@@ -186,7 +273,8 @@ export default function App() {
                 <input
                   type="date"
                   value={dueDate}
-                  onChange={e => setDueDate(e.target.value)}
+                  onChange={(e) => setDueDate(e.target.value)}
+                  min={new Date().toISOString().split("T")[0]}  //validation
                 />
 
                 <div className="input-row">
@@ -210,10 +298,20 @@ export default function App() {
                 {editTask ? "Save Changes" : "Add Task"}
               </button>
 
-              <button onClick={() => setShowModal(false)}>
+              <button
+                onClick={() => {
+                  setShowModal(false);
+                  setEditTask(null);
+                  setTitle("");
+                  setDescription("");
+                  setDueDate("");
+                  setPriority("medium");
+                  setViewTask(false);
+                }}
+              >
                 Cancel
               </button>
-               {/* 👇 이게 반드시 있어야 함 */}
+              
              
             </div>
           </div>
@@ -237,17 +335,51 @@ export default function App() {
             </div>
 
             <div className="modal-actions">
-              <button onClick={() => setViewTask(null)}>
-                Close
+              <button
+              style={{color:'black'}}
+                onClick={() => {
+                  setShowModal(false);
+                  setEditTask(null);
+                  setTitle("");
+                  setDescription("");
+                  setDueDate("");
+                  setPriority("medium");
+                  setViewTask(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+     {deleteTaskId && (
+        <div className="modal-overlay">
+          <div className="modal confirm-modal">
+            <h3>Delete Task</h3>
+
+            <p>
+              Are you sure you want to delete
+              <strong> "{taskToDelete?.title}" </strong> ?
+            </p>
+
+            <div className="modal-actions">
+              <button onClick={confirmDelete}>
+                OK
+              </button>
+
+              <button onClick={() => setDeleteTaskId(null)}>
+                Cancel
               </button>
             </div>
           </div>
         </div>
       )}
       <TaskList
-        tasks={filteredTasks}
+        // tasks={filteredTasks}
+        tasks={sortedTasks}
         toggleTask={toggleTask}
-        deleteTask={deleteTask}
+        deleteTask={setDeleteTaskId} 
         updateTask={updateTask}
         setViewTask={setViewTask}
         setEditTask={setEditTask}
