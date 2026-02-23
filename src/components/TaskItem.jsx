@@ -5,13 +5,16 @@ export default function TaskItem({
   task,
   toggleTask,
   deleteTask,
-  updateTask
+  updateTask,
+  setViewTask,
+  setEditTask
+  
 }) {
   const [editing, setEditing] = useState(false);
-  const [value, setValue] = useState(task.text);
+  const [value, setValue] = useState(task.title);
 
   const handleEdit = () => {
-    updateTask(task.id, value);
+    updateTask(task.id, { title: value });
     setEditing(false);
   };
 
@@ -21,21 +24,21 @@ export default function TaskItem({
     return "#3b82f6";
   };
 
+  const formattedDate = new Date(task.createdAt).toLocaleString();
+
   return (
     <motion.div
-      initial={{ opacity: 0 }}  // opacity로만 부드럽게 나타남
-      animate={{ opacity: 1 }}  // opacity가 1로 변함
-      exit={{ opacity: 0 }}     // exit 시 opacity 0
-      transition={{ duration: 0.5 }}  // 부드러운 페이드 인/아웃
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
       className="task-card"
     >
-      {/* priority bar */}
       <div
         className="priority-bar"
         style={{ background: getPriorityColor() }}
       />
 
-      {/* checkbox */}
       <motion.div
         className={`check-box ${task.completed ? "checked" : ""}`}
         onClick={() => toggleTask(task.id)}
@@ -44,33 +47,62 @@ export default function TaskItem({
         {task.completed && "✓"}
       </motion.div>
 
-      {/* text */}
-      {editing ? (
-        <input
-          className="edit-input"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          onBlur={handleEdit}
-          onKeyDown={(e) => e.key === "Enter" && handleEdit()}
-          autoFocus
-        />
-      ) : (
-        <span
-          className={`task-text ${task.completed ? "completed" : ""}`}
-          onDoubleClick={() => setEditing(true)}
-        >
-          {task.text}
-        </span>
-      )}
+      <div className="task-content">
+        {editing ? (
+          <input
+            className="edit-input"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onBlur={handleEdit}
+            onKeyDown={(e) => e.key === "Enter" && handleEdit()}
+            autoFocus
+          />
+        ) : (
+          <>
+            <div
+              className={`task-title ${
+                task.completed ? "completed" : ""
+              }`}
+              onDoubleClick={() => setEditing(true)}
+            >
+              {task.title}
+            </div>
 
-      {/* delete button */}
-      <motion.button
-        className="delete-floating"
-        whileHover={{ scale: 1.1, backgroundColor: "#fee2e2" }}
-        onClick={() => deleteTask(task.id)}
-      >
-        ✕
-      </motion.button>
+            {task.description && (
+              <div className="task-description">
+                {task.description}
+              </div>
+            )}
+
+            <div className="task-date">
+              Created: {formattedDate}
+            </div>
+          </>
+        )}
+      </div>
+
+      <div className="action-buttons">
+        <button
+          className="view-btn"
+          onClick={() => setViewTask(task)}
+        >
+          👁
+        </button>
+
+        <button
+          className="edit-btn"
+           onClick={() => setEditTask(task)}
+        >
+          ✏
+        </button>
+
+        <button
+          className="delete-btn"
+          onClick={() => deleteTask(task.id)}
+        >
+          ✕
+        </button>
+      </div>
     </motion.div>
   );
 }
